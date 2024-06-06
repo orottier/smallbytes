@@ -1,9 +1,24 @@
 use bytes::buf::UninitSlice;
 use bytes::{Buf, BufMut};
 use smallvec::SmallVec;
+use std::ops::{Deref, DerefMut};
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash, Ord, PartialOrd)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Ord, PartialOrd, Default)]
 pub struct SmallBytes<const N: usize>(SmallVec<[u8; N]>);
+
+impl<const N: usize> Deref for SmallBytes<N> {
+    type Target = SmallVec<[u8; N]>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl<const N: usize> DerefMut for SmallBytes<N> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 impl<const N: usize> AsRef<[u8]> for SmallBytes<N> {
     fn as_ref(&self) -> &[u8] {
@@ -11,39 +26,9 @@ impl<const N: usize> AsRef<[u8]> for SmallBytes<N> {
     }
 }
 
-impl<const N: usize> Default for SmallBytes<N> {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl<const N: usize> SmallBytes<N> {
     pub fn new() -> Self {
         Self(SmallVec::new())
-    }
-
-    pub fn len(&self) -> usize {
-        self.0.len()
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.0.is_empty()
-    }
-
-    pub fn capacity(&self) -> usize {
-        self.0.capacity()
-    }
-
-    pub fn reserve(&mut self, additional: usize) {
-        self.0.reserve(additional)
-    }
-
-    pub fn resize(&mut self, amount: usize, value: u8) {
-        self.0.resize(amount, value)
-    }
-
-    pub fn extend_from_slice(&mut self, slice: &[u8]) {
-        self.0.extend_from_slice(slice)
     }
 }
 
