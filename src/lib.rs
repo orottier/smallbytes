@@ -2,6 +2,7 @@ use bytes::buf::UninitSlice;
 use bytes::{Buf, BufMut};
 use smallvec::SmallVec;
 
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Ord, PartialOrd)]
 pub struct SmallBytes<const N: usize>(SmallVec<[u8; N]>);
 
 impl<const N: usize> AsRef<[u8]> for SmallBytes<N> {
