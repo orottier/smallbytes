@@ -1,5 +1,11 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+use smallvec::SmallVec;
+
+pub struct SmallBytes<const N: usize>(SmallVec<[u8; N]>);
+
+impl<const N: usize> SmallBytes<N> {
+    pub fn new() -> Self {
+        Self(SmallVec::new())
+    }
 }
 
 #[cfg(test)]
@@ -8,7 +14,6 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+        let _b = SmallBytes::<12>::new();
     }
 }
