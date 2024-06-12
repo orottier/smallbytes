@@ -32,6 +32,18 @@ impl<const N: usize> SmallBytes<N> {
     }
 }
 
+impl<const N: usize> Extend<u8> for SmallBytes<N> {
+    fn extend<T: IntoIterator<Item = u8>>(&mut self, iter: T) {
+        self.0.extend(iter)
+    }
+}
+
+impl<'a, const N: usize> Extend<&'a u8> for SmallBytes<N> {
+    fn extend<T: IntoIterator<Item = &'a u8>>(&mut self, iter: T) {
+        self.0.extend(iter.into_iter().copied())
+    }
+}
+
 unsafe impl<const N: usize> BufMut for SmallBytes<N> {
     fn remaining_mut(&self) -> usize {
         isize::MAX as usize - self.0.len()
