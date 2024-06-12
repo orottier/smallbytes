@@ -114,6 +114,15 @@ mod tests {
     use std::io::Cursor;
 
     #[test]
+    fn test_size() {
+        assert_eq!(24, std::mem::size_of::<SmallBytes<0>>());
+        assert_eq!(24, std::mem::size_of::<SmallBytes<8>>());
+        assert_eq!(24, std::mem::size_of::<SmallBytes<16>>());
+        assert_eq!(32, std::mem::size_of::<SmallBytes<24>>());
+        assert_eq!(40, std::mem::size_of::<SmallBytes<32>>());
+    }
+
+    #[test]
     fn test_it_works() {
         let mut buf = SmallBytes::<4>::new();
         buf.put(&b"hello world"[..]);
