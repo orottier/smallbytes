@@ -5,4 +5,4 @@ edition = "2021"
 
 [dependencies]
 bytes = "1.6.0"
-smallvec = { version = "1.13.2", features = ["const_generics"] }
+smallvec = { version = "1.13.2", features = ["const_generics", "union"] }
