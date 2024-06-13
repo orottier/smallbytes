@@ -5,6 +5,7 @@ use bytes::{Buf, BufMut};
 use smallvec::SmallVec;
 use std::ops::{Deref, DerefMut};
 
+/// A Vec-like container that can store a small number of bytes inline.
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Ord, PartialOrd, Default)]
 pub struct SmallBytes<const N: usize>(SmallVec<[u8; N]>);
 
@@ -13,6 +14,34 @@ impl<const N: usize> Deref for SmallBytes<N> {
 
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl<const N: usize> SmallBytes<N> {
+    /// Construct an empty SmallBytes object
+    ///
+    /// ```rust
+    /// use smallbytes::SmallBytes;
+    ///
+    /// let buf = SmallBytes::<4>::new();
+    /// assert!(buf.is_empty());
+    /// ```
+    pub fn new() -> Self {
+        Self(SmallVec::new())
+    }
+
+    /// Wrap an existing `SmallVec<[u8; N]>`
+    ///
+    /// ```rust
+    /// use smallbytes::SmallBytes;
+    /// use smallvec::SmallVec;
+    ///
+    /// let vec = SmallVec::<[u8; 4]>::new();
+    /// let bytes = SmallBytes::from(vec);
+    /// assert!(bytes.is_empty());
+    /// ```
+    pub fn from(small_vec: SmallVec<[u8; N]>) -> Self {
+        Self(small_vec)
     }
 }
 
@@ -25,12 +54,6 @@ impl<const N: usize> DerefMut for SmallBytes<N> {
 impl<const N: usize> AsRef<[u8]> for SmallBytes<N> {
     fn as_ref(&self) -> &[u8] {
         self.0.as_ref()
-    }
-}
-
-impl<const N: usize> SmallBytes<N> {
-    pub fn new() -> Self {
-        Self(SmallVec::new())
     }
 }
 
