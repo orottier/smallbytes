@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 use bytes::buf::UninitSlice;
 use bytes::{Buf, BufMut};
 use smallvec::SmallVec;
