@@ -123,11 +123,66 @@ mod tests {
     }
 
     #[test]
-    fn test_it_works() {
+    fn test_put() {
         let mut buf = SmallBytes::<4>::new();
         buf.put(&b"hello world"[..]);
         buf.put_u16(1234);
         assert_eq!(buf.as_ref(), &b"hello world\x04\xD2"[..]);
+    }
+
+    #[test]
+    fn test_remaining_mut() {
+        let mut buf = SmallBytes::<4>::new();
+        let original_remaining = buf.remaining_mut();
+        buf.put(&b"hello"[..]);
+        assert_eq!(original_remaining - 5, buf.remaining_mut());
+    }
+
+    #[test]
+    fn test_advance_mut() {
+        let mut buf = SmallBytes::<5>::new();
+
+        // Write some data
+        buf.chunk_mut()[0..2].copy_from_slice(b"he");
+        unsafe { buf.advance_mut(2) };
+
+        // write more bytes
+        buf.chunk_mut()[0..3].copy_from_slice(b"llo");
+
+        unsafe {
+            buf.advance_mut(3);
+        }
+
+        assert_eq!(5, buf.len());
+        assert_eq!(&buf[..], b"hello");
+    }
+
+    #[test]
+    fn test_chunk_mut() {
+        let mut buf = SmallBytes::<5>::new();
+        unsafe {
+            // MaybeUninit::as_mut_ptr
+            buf.chunk_mut()[0..].as_mut_ptr().write(b'h');
+            buf.chunk_mut()[1..].as_mut_ptr().write(b'e');
+
+            buf.advance_mut(2);
+
+            buf.chunk_mut()[0..].as_mut_ptr().write(b'l');
+            buf.chunk_mut()[1..].as_mut_ptr().write(b'l');
+            buf.chunk_mut()[2..].as_mut_ptr().write(b'o');
+
+            buf.advance_mut(3);
+        }
+        assert_eq!(5, buf.len());
+        assert_eq!(&buf[..], b"hello");
+    }
+
+    #[test]
+    fn test_put_slice_larger_than_inline_capacity() {
+        let mut buf = SmallBytes::<4>::new();
+        buf.put_u8(0);
+        buf.put_slice(&[0; 8][..]);
+        assert_eq!(&buf[..], &[0; 9][..]);
     }
 
     #[test]
