@@ -2,6 +2,11 @@
 name = "smallbytes"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
+description = "SmallBytes = SmallVec + impl BufMut (from the bytes crate)"
+readme = "README.md"
+keywords = ["buffers", "zero-copy", "io"]
+categories = ["network-programming", "data-structures"]
 
 [dependencies]
 bytes = "1.6.0"
